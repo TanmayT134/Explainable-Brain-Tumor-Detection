@@ -38,30 +38,85 @@ st.set_page_config(
 # ==========================
 st.markdown("""
 <style>
+
+/* GLOBAL */
+body {
+    background-color: #0E1117;
+}
+
+/* MAIN CONTAINER */
 .block-container {
     padding-top: 2rem;
     padding-bottom: 2rem;
     max-width: 100%;
 }
 
+/* TITLE */
 .main-title {
-    font-size: 40px;
-    font-weight: bold;
-    color: #4CAF50;
+    font-size: 42px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #4CAF50, #00E5FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 5px;
 }
 
+/* SUBTITLE */
 .sub-title {
     font-size: 18px;
-    color: #CCCCCC;
-    margin-bottom: 20px;
+    color: #A0A0A0;
+    margin-bottom: 25px;
 }
 
+/* PREMIUM CARD */
 .card {
-    background-color: #111;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
     padding: 20px;
-    border-radius: 12px;
     margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
 }
+
+/* CARD HOVER */
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+}
+
+/* SECTION TITLES */
+h2, h3 {
+    color: #EAEAEA !important;
+}
+
+/* METRIC STYLE */
+[data-testid="metric-container"] {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+/* PROGRESS BAR */
+.stProgress > div > div > div {
+    background: linear-gradient(90deg, #4CAF50, #00E5FF);
+}
+
+/* BUTTON */
+.stButton>button {
+    border-radius: 10px;
+    background: linear-gradient(90deg, #4CAF50, #00E5FF);
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+
+/* SIDEBAR */
+section[data-testid="stSidebar"] {
+    background-color: #0B0F14;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -69,33 +124,34 @@ st.markdown("""
 # ==========================
 # 🏥 HEADER
 # ==========================
-st.markdown('<div class="main-title">🧠 Brain MRI Tumor Detection System</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Deep Learning + Explainable AI (Grad-CAM)</div>', unsafe_allow_html=True)
-
+st.markdown('<div class="main-title">🧠 Brain MRI AI Diagnostic System</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Deep Learning • Explainable AI • Clinical Visualization</div>', unsafe_allow_html=True)
+st.markdown("---")
 
 # ==========================
 # 🏥 SIDEBAR
 # ==========================
-st.sidebar.markdown("## 🧠 Model Information")
+st.sidebar.markdown("## 🧠 Model Dashboard")
 
 st.sidebar.markdown("""
-**Model Type:** CNN  
-**Input Size:** 224 × 224  
-**Classes:**
+### ⚙️ Model
+- CNN Architecture  
+- Input: 224 × 224  
+
+### 🧬 Classes
 - Glioma  
 - Meningioma  
 - Pituitary  
 - No Tumor  
 
+### 🔬 Features
+- Grad-CAM Explainability  
+- Confidence Analysis  
+
 ---
 
-**Explainability:** Grad-CAM  
-
----
-
-⚠️ *For research & educational use only*
+⚠️ *For Research and Educational use only. Not for clinical use*
 """)
-
 
 # ==========================
 # 📤 FILE UPLOAD
@@ -328,3 +384,10 @@ if uploaded_files:
                 os.remove(report_path)
             except:
                 pass
+            
+        
+        st.markdown("---")
+        st.markdown(
+            "<center style='color: gray;'>AI-Based Brain Tumor Detection System • Built with Streamlit</center>",
+            unsafe_allow_html=True
+        )
