@@ -61,23 +61,29 @@ def overlay_heatmap(heatmap, image):
     if len(image.shape) == 2:
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
-    elif image.shape[2] == 1:
-        image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
-
-    # 🔥 CLEAN NOISE (CORRECT PLACE)
-    heatmap = np.where(heatmap > 0.6, heatmap, 0)
-
-    # Resize
+    # Resize heatmap
     heatmap = cv2.resize(heatmap, (image.shape[1], image.shape[0]))
 
-    # Scale to 0–255
-    heatmap = np.uint8(255 * heatmap)
+    # Normalize properly
+    heatmap = np.maximum(heatmap, 0)
+    if np.max(heatmap) != 0:
+        heatmap /= np.max(heatmap)
 
-    # Color map
+    # 🔥 Apply strong threshold (reduce noise)
+    heatmap = np.where(heatmap > 0.6, heatmap, 0)
+
+    # 🔥 Apply brain mask
+    brain_mask = get_brain_mask(image)
+    brain_mask = brain_mask / 255.0
+
+    heatmap = heatmap * brain_mask
+
+    # Convert to color
+    heatmap = np.uint8(255 * heatmap)
     heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
 
     # Blend
-    return cv2.addWeighted(image.astype(np.uint8), 0.6, heatmap, 0.4, 0)
+    return cv2.addWeighted(image.astype(np.uint8), 0.7, heatmap, 0.3, 0)
 
 
 # =========================================
@@ -106,3 +112,18 @@ def get_bounding_box(heatmap, threshold=0.6):
     cnt = max(contours, key=cv2.contourArea)
 
     return cv2.boundingRect(cnt)
+
+def get_brain_mask(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+
+    # Blur
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    # Threshold
+    _, thresh = cv2.threshold(blur, 45, 255, cv2.THRESH_BINARY)
+
+    # Morphology to clean
+    kernel = np.ones((5,5), np.uint8)
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+
+    return thresh
