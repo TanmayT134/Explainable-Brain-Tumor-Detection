@@ -39,7 +39,7 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* GLOBAL */
+/* BACKGROUND */
 body {
     background-color: #0E1117;
 }
@@ -48,7 +48,8 @@ body {
 .block-container {
     padding-top: 2rem;
     padding-bottom: 2rem;
-    max-width: 100%;
+    max-width: 1200px;
+    margin: auto;
 }
 
 /* TITLE */
@@ -58,43 +59,39 @@ body {
     background: linear-gradient(90deg, #4CAF50, #00E5FF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 5px;
 }
 
 /* SUBTITLE */
 .sub-title {
     font-size: 18px;
-    color: #A0A0A0;
+    color: #BBBBBB;
     margin-bottom: 25px;
 }
 
-/* PREMIUM CARD */
+/* 🔥 IMPROVED CARD */
 .card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(12px);
-    border-radius: 16px;
+    background: #161B22;   /* darker solid */
+    border-radius: 14px;
     padding: 20px;
     margin-bottom: 20px;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    transition: all 0.3s ease;
+    border: 1px solid #2A2F3A;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
 
-/* CARD HOVER */
+/* CARD HOVER (SUBTLE) */
 .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+    border: 1px solid #4CAF50;
 }
 
-/* SECTION TITLES */
+/* TEXT */
 h2, h3 {
     color: #EAEAEA !important;
 }
 
-/* METRIC STYLE */
+/* METRICS */
 [data-testid="metric-container"] {
-    background: rgba(255,255,255,0.05);
-    border-radius: 12px;
+    background: #1E242D;
+    border-radius: 10px;
     padding: 10px;
 }
 
@@ -112,14 +109,14 @@ h2, h3 {
     font-weight: bold;
 }
 
-/* SIDEBAR */
+/* SIDEBAR FIX */
 section[data-testid="stSidebar"] {
-    background-color: #0B0F14;
+    background-color: #11161C;
+    border-right: 1px solid #2A2F3A;
 }
 
 </style>
 """, unsafe_allow_html=True)
-
 
 # ==========================
 # 🏥 HEADER
