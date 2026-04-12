@@ -43,7 +43,8 @@ def get_gradcam_heatmap(model, image, last_conv_layer_name):
 
         # Normalize
         if np.max(heatmap) != 0:
-            heatmap /= np.max(heatmap)
+            heatmap = heatmap - np.min(heatmap)
+            heatmap = heatmap / (np.max(heatmap) + 1e-8)
 
         return heatmap
 
@@ -57,34 +58,39 @@ def get_gradcam_heatmap(model, image, last_conv_layer_name):
 # =========================================
 def overlay_heatmap(heatmap, image):
 
-    # Ensure RGB
     if len(image.shape) == 2:
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
-    # Resize heatmap
     heatmap = cv2.resize(heatmap, (image.shape[1], image.shape[0]))
 
-    # Normalize properly
-    heatmap = np.maximum(heatmap, 0)
-    if np.max(heatmap) != 0:
-        heatmap /= np.max(heatmap)
+    # Normalize
+    heatmap = heatmap - np.min(heatmap)
+    heatmap = heatmap / (np.max(heatmap) + 1e-8)
 
-    # 🔥 Apply strong threshold (reduce noise)
-    heatmap = np.where(heatmap > 0.6, heatmap, 0)
+    # 🔥 Boost strong regions
+    heatmap = np.power(heatmap, 2.5)
 
-    # 🔥 Apply brain mask
-    brain_mask = get_brain_mask(image)
-    brain_mask = brain_mask / 255.0
+    # Smooth
+    heatmap = cv2.GaussianBlur(heatmap, (11, 11), 0)
 
+    # 🔥 Keep only strongest activations
+    threshold = np.percentile(heatmap, 92)
+    heatmap = np.where(heatmap >= threshold, heatmap, 0)
+
+    # Brain mask
+    brain_mask = get_brain_mask(image) / 255.0
     heatmap = heatmap * brain_mask
 
     # Convert to color
-    heatmap = np.uint8(255 * heatmap)
-    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
+    colored = cv2.applyColorMap(np.uint8(255 * heatmap), cv2.COLORMAP_JET)
 
-    # Blend
-    return cv2.addWeighted(image.astype(np.uint8), 0.7, heatmap, 0.3, 0)
+    # Overlay only active regions
+    overlay = image.copy()
+    mask = heatmap > 0
 
+    overlay[mask] = cv2.addWeighted(image[mask], 0.5, colored[mask], 0.5, 0)
+
+    return overlay
 
 # =========================================
 # OPTIONAL (NOT USED NOW)
@@ -116,14 +122,15 @@ def get_bounding_box(heatmap, threshold=0.6):
 def get_brain_mask(image):
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
-    # Blur
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    # Normalize contrast
+    gray = cv2.equalizeHist(gray)
 
-    # Threshold
-    _, thresh = cv2.threshold(blur, 45, 255, cv2.THRESH_BINARY)
+    # Strong threshold
+    _, thresh = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY)
 
-    # Morphology to clean
-    kernel = np.ones((5,5), np.uint8)
+    # Remove noise
+    kernel = np.ones((7,7), np.uint8)
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
 
     return thresh
