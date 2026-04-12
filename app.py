@@ -31,6 +31,10 @@ st.set_page_config(
     layout="wide"
 )
 
+def space(n=2):
+    for _ in range(n):
+        st.write("")
+
 
 # ==========================
 # CSS (CLEAN + PREMIUM)
@@ -94,20 +98,31 @@ st.markdown("---")
 st.sidebar.markdown("## 🧠 Model Dashboard")
 
 st.sidebar.markdown("""
-**Model:** CNN  
-**Input:** 224 × 224  
+### ⚙️ Model Details
+- **Architecture:** Convolutional Neural Network (CNN)  
+- **Type:** Multiclass Classification  
+- **Input Size:** 224 × 224 × 3  
 
-**Classes:**
+### 🧬 Tumor Classes
 - Glioma  
 - Meningioma  
 - Pituitary  
 - No Tumor  
 
+### 🔬 Explainability
+- Grad-CAM (Gradient-weighted Class Activation Mapping)  
+- Highlights regions influencing model decisions  
+
+### 📊 Output
+- Class Probabilities  
+- Confidence Score  
+- Visual Attention Map  
+
 ---
 
-⚠️ *For educational use only*
+⚠️ **Disclaimer:**  
+This system is intended for educational and research purposes only and should not replace professional medical diagnosis.
 """)
-
 
 # ==========================
 # UPLOAD
@@ -157,21 +172,22 @@ if uploaded_files:
         # ==========================
         # IMAGE QUALITY
         # ==========================
-        st.subheader("🔍 Image Quality Check")
+        space()
+        st.subheader("🔍 Image Quality Assessment")
 
         if img.mean() < 50:
-            st.warning("Image appears too dark")
+            st.warning("The MRI image appears underexposed (too dark), which may reduce feature visibility and affect prediction accuracy.")
         elif img.mean() > 200:
-            st.warning("Image appears too bright")
+            st.warning("The MRI image appears overexposed (too bright), which may obscure structural details.")
         else:
-            st.success("Image quality is acceptable")
+            st.success("The image quality is within an acceptable range for analysis.")
 
 
         # ==========================
         # PREPROCESSING
         # ==========================
+        space()
         processed, steps = preprocess_image(img)
-
         st.subheader("🧪 Preprocessing Steps")
 
         cols = st.columns(len(steps))
@@ -182,7 +198,13 @@ if uploaded_files:
                 else:
                     st.image(step_img, caption=title)
 
+        st.caption("""
+        Preprocessing enhances image quality by normalizing intensity, resizing to model input size,
+        and improving feature clarity for better model performance.
+        """)
 
+        space()
+        
         # ==========================
         # PREDICTION
         # ==========================
@@ -201,6 +223,7 @@ if uploaded_files:
         # ==========================
         # PROBABILITIES
         # ==========================
+        space()
         st.subheader("📊 Class Probabilities")
 
         probabilities = prediction[0] * 100
@@ -216,6 +239,11 @@ if uploaded_files:
             class_labels[i]: float(probabilities[i])
             for i in range(len(class_labels))
         }
+        
+        st.caption("""
+        The bar chart represents the model's confidence distribution across all tumor classes.
+        Higher values indicate stronger model belief in that class.
+        """)
 
 
         # ==========================
@@ -230,6 +258,7 @@ if uploaded_files:
         # ==========================
         # RESULT
         # ==========================
+        space()
         st.subheader("🧠 Diagnosis Result")
 
         col1, col2, col3 = st.columns(3)
@@ -238,32 +267,39 @@ if uploaded_files:
         col3.metric("Confidence", f"{confidence*100:.2f}%")
 
         st.progress(float(confidence))
+        
+        st.caption("""
+        The predicted class corresponds to the highest probability output from the CNN model.
+        Confidence score reflects prediction certainty.
+        """)
 
 
         # ==========================
         # CONFIDENCE ANALYSIS
         # ==========================
+        space()
         st.subheader("🧠 Confidence Analysis")
 
         if confidence > 0.9:
-            st.success("High Confidence Prediction")
+            st.success("High confidence prediction. The model is strongly certain about its classification.")
         elif confidence > 0.7:
-            st.warning("Moderate Confidence")
+            st.warning("Moderate confidence. Prediction is reliable but should be interpreted cautiously.")
         else:
-            st.error("Low Confidence")
+            st.error("Low confidence. Prediction may be unreliable and requires careful validation.")
 
         if confidence < 0.7:
-            st.warning("""
-Possible reasons:
-• Poor image quality  
-• Unseen patterns  
-• Model limitation  
-""")
+            st.info("""
+        Possible causes of low confidence:
+        • Poor image quality  
+        • Overlapping tumor features  
+        • Model limitations on unseen data  
+        """)
 
 
         # ==========================
         # GRAD-CAM
         # ==========================
+        space()
         st.subheader("🔥 Model Explanation")
 
         heatmap = get_gradcam_heatmap(model, processed, "conv2d_2")
@@ -280,7 +316,11 @@ Possible reasons:
             with col2:
                 st.image(gradcam_image, caption="Grad-CAM", use_container_width=True)
 
-            st.caption("Highlighted regions indicate areas influencing prediction, not exact tumor boundaries.")
+            st.caption("""
+            Grad-CAM highlights regions of the MRI scan that contributed most to the model's decision.
+            Bright areas indicate high importance. This visualization improves model interpretability
+            but does not represent exact tumor boundaries.
+            """)
 
             temp_heatmap = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
             cv2.imwrite(temp_heatmap.name, cv2.cvtColor(gradcam_image, cv2.COLOR_RGB2BGR))
@@ -293,14 +333,23 @@ Possible reasons:
         # ==========================
         # INTERPRETATION
         # ==========================
+        space()
         st.subheader("📋 Interpretation")
 
         if result == "No Tumor Detected":
-            st.success("MRI appears normal.")
+            st.success("""
+        No significant abnormality detected. The MRI scan appears consistent with a normal brain structure.
+        However, clinical correlation is recommended.
+        """)
         else:
-            st.error(f"{predicted_label} tumor detected. Clinical validation recommended.")
+            st.error(f"""
+        The model indicates presence of **{predicted_label} tumor**.
+        This suggests abnormal tissue growth patterns in the MRI scan.
+        Further clinical evaluation and expert confirmation are advised.
+        """)
 
-
+        space()
+        
         # ==========================
         # REPORT
         # ==========================
