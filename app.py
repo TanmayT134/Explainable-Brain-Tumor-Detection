@@ -121,7 +121,7 @@ st.sidebar.markdown("""
 ---
 
 ⚠️ **Disclaimer:**  
-This system is intended for educational and research purposes only and should not replace professional medical diagnosis.
+> This system is intended for educational and research purposes only and should not replace professional medical diagnosis.
 """)
 
 # ==========================
