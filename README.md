@@ -228,29 +228,35 @@ Computer-aided diagnosis
 
 ## 👨‍💻 Team & Contributions
 
-This project was developed collaboratively with clearly defined responsibilities:
-
-### 🧠 Tanmay Tawade *(Lead Developer)*
-- Designed and implemented the complete system architecture  
-- Developed CNN-based prediction pipeline  
-- Integrated Grad-CAM for explainable AI  
-- Built Streamlit web application (UI/UX)
+This project was developed collaboratively, with all members contributing across design, development, and evaluation phases.
 
 ---
 
-### 📊 Aishwarya Kale *(Data & Documentation)*
-- Dataset collection and preprocessing  
-- Data organization and validation  
-- Report writing and documentation  
+### 📊 Aishwarya Kale
+- Dataset collection, preprocessing, and organization  
+- Data validation and preparation for model training  
+- Contribution to system workflow design and documentation  
+- Assistance in report structuring and result interpretation  
 
 ---
 
-### 🧪 Sakshi Bedekar *(Research & Testing)*
-- Project ideation and conceptual design  
-- Model testing and result evaluation  
-- Presentation materials and validation  
+### 🧠 Tanmay Tawade
+- CNN model integration and system architecture design  
+- Grad-CAM implementation for explainable AI  
+- Streamlit application development and UI/UX design  
+- Integration of prediction, visualization, and report generation  
 
-> 📌 *All major design decisions and improvements were discussed and finalized collaboratively.*
+---
+
+### 🧪 Sakshi Bedekar
+- Project ideation and conceptual planning  
+- Model testing, validation, and performance analysis  
+- Contribution to evaluation of results and system behavior  
+- Documentation, presentation, and reporting support  
+
+---
+
+> 📌 *All members actively contributed to discussions, design decisions, testing, and refinement of the system.*
 
 ---
 
