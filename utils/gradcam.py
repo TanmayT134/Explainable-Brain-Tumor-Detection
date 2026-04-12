@@ -67,27 +67,30 @@ def overlay_heatmap(heatmap, image):
     heatmap = heatmap - np.min(heatmap)
     heatmap = heatmap / (np.max(heatmap) + 1e-8)
 
-    # 🔥 Balanced boost
-    heatmap = np.power(heatmap, 1.5)
+    # Moderate boost
+    heatmap = np.power(heatmap, 1.4)
 
     # Smooth
     heatmap = cv2.GaussianBlur(heatmap, (11, 11), 0)
 
-    # 🔥 Less aggressive threshold
-    threshold = np.percentile(heatmap, 80)
+    # 🔥 Suppress edges
+    edges = cv2.Canny(cv2.cvtColor(image, cv2.COLOR_RGB2GRAY), 50, 150) / 255.0
+    heatmap = heatmap * (1 - 0.5 * edges)
+
+    # Brain mask (STRICT)
+    brain_mask = get_brain_mask(image) / 255.0
+    heatmap = heatmap * brain_mask
+
+    # Threshold
+    threshold = np.percentile(heatmap, 75)
     heatmap = np.where(heatmap >= threshold, heatmap, 0)
 
-    # Soft brain mask
-    brain_mask = get_brain_mask(image) / 255.0
-    heatmap = heatmap * (0.7 * brain_mask + 0.3)
-
-    # Color map
+    # Color
     colored = cv2.applyColorMap(np.uint8(255 * heatmap), cv2.COLORMAP_JET)
 
     # Overlay
     overlay = image.copy()
     mask = heatmap > 0
-
     overlay[mask] = cv2.addWeighted(image[mask], 0.6, colored[mask], 0.4, 0)
 
     return overlay
@@ -122,15 +125,18 @@ def get_bounding_box(heatmap, threshold=0.6):
 def get_brain_mask(image):
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
-    # Normalize contrast
-    gray = cv2.equalizeHist(gray)
+    # Threshold (strong)
+    _, thresh = cv2.threshold(gray, 40, 255, cv2.THRESH_BINARY)
 
-    # Strong threshold
-    _, thresh = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY)
+    # Find largest contour (brain only)
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Remove noise
-    kernel = np.ones((7,7), np.uint8)
-    thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
+    if not contours:
+        return thresh
 
-    return thresh
+    largest = max(contours, key=cv2.contourArea)
+
+    mask = np.zeros_like(gray)
+    cv2.drawContours(mask, [largest], -1, 255, -1)
+
+    return mask
