@@ -14,7 +14,7 @@ from utils.gradcam import get_gradcam_heatmap, overlay_heatmap
 
 
 # ==========================
-# MODEL LOAD (CACHED)
+# MODEL LOAD
 # ==========================
 @st.cache_resource
 def load_model_cached():
@@ -28,33 +28,23 @@ model = load_model_cached()
 # ==========================
 st.set_page_config(
     page_title="Brain Tumor AI",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide"
 )
 
 
 # ==========================
-# 🎨 GLOBAL CSS
+# CSS (CLEAN + PREMIUM)
 # ==========================
 st.markdown("""
 <style>
-
-/* BACKGROUND */
-body {
-    background-color: #0E1117;
-}
-
-/* MAIN CONTAINER */
 .block-container {
     padding-top: 2rem;
-    padding-bottom: 2rem;
     max-width: 1200px;
-    margin: auto;
 }
 
 /* TITLE */
 .main-title {
-    font-size: 42px;
+    font-size: 40px;
     font-weight: 700;
     background: linear-gradient(90deg, #4CAF50, #00E5FF);
     -webkit-background-clip: text;
@@ -63,29 +53,8 @@ body {
 
 /* SUBTITLE */
 .sub-title {
-    font-size: 18px;
     color: #BBBBBB;
-    margin-bottom: 25px;
-}
-
-/* 🔥 IMPROVED CARD */
-.card {
-    background: #161B22;   /* darker solid */
-    border-radius: 14px;
-    padding: 20px;
     margin-bottom: 20px;
-    border: 1px solid #2A2F3A;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-}
-
-/* CARD HOVER (SUBTLE) */
-.card:hover {
-    border: 1px solid #4CAF50;
-}
-
-/* TEXT */
-h2, h3 {
-    color: #EAEAEA !important;
 }
 
 /* METRICS */
@@ -95,63 +64,53 @@ h2, h3 {
     padding: 10px;
 }
 
-/* PROGRESS BAR */
-.stProgress > div > div > div {
-    background: linear-gradient(90deg, #4CAF50, #00E5FF);
-}
-
 /* BUTTON */
 .stButton>button {
-    border-radius: 10px;
+    border-radius: 8px;
     background: linear-gradient(90deg, #4CAF50, #00E5FF);
     color: white;
     border: none;
-    font-weight: bold;
 }
 
-/* SIDEBAR FIX */
+/* SIDEBAR */
 section[data-testid="stSidebar"] {
     background-color: #11161C;
-    border-right: 1px solid #2A2F3A;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
+
 # ==========================
-# 🏥 HEADER
+# HEADER
 # ==========================
 st.markdown('<div class="main-title">🧠 Brain MRI AI Diagnostic System</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-title">Deep Learning • Explainable AI • Clinical Visualization</div>', unsafe_allow_html=True)
 st.markdown("---")
 
+
 # ==========================
-# 🏥 SIDEBAR
+# SIDEBAR
 # ==========================
 st.sidebar.markdown("## 🧠 Model Dashboard")
 
 st.sidebar.markdown("""
-### ⚙️ Model
-- CNN Architecture  
-- Input: 224 × 224  
+**Model:** CNN  
+**Input:** 224 × 224  
 
-### 🧬 Classes
+**Classes:**
 - Glioma  
 - Meningioma  
 - Pituitary  
 - No Tumor  
 
-### 🔬 Features
-- Grad-CAM Explainability  
-- Confidence Analysis  
-
 ---
 
-⚠️ *For Research and Educational use only. Not for clinical use*
+⚠️ *For educational use only*
 """)
 
+
 # ==========================
-# 📤 FILE UPLOAD
+# UPLOAD
 # ==========================
 uploaded_files = st.file_uploader(
     "Upload MRI Image(s)",
@@ -169,6 +128,7 @@ if uploaded_files:
         st.markdown("---")
         st.subheader(f"📁 Processing: {uploaded_file.name}")
 
+        # LOAD IMAGE
         try:
             image = Image.open(uploaded_file)
         except:
@@ -187,17 +147,16 @@ if uploaded_files:
         elif img.shape[2] == 1:
             img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
 
-        # Temp image
+        # TEMP SAVE
         uid = str(uuid.uuid4())
-        temp_image = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-        image.save(temp_image.name)
-        image_path = temp_image.name
+        temp_img = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
+        image.save(temp_img.name)
+        image_path = temp_img.name
 
 
         # ==========================
-        # 🔍 IMAGE QUALITY
+        # IMAGE QUALITY
         # ==========================
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.subheader("🔍 Image Quality Check")
 
         if img.mean() < 50:
@@ -207,15 +166,12 @@ if uploaded_files:
         else:
             st.success("Image quality is acceptable")
 
-        st.markdown('</div>', unsafe_allow_html=True)
-
 
         # ==========================
-        # 🧪 PREPROCESSING
+        # PREPROCESSING
         # ==========================
         processed, steps = preprocess_image(img)
 
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.subheader("🧪 Preprocessing Steps")
 
         cols = st.columns(len(steps))
@@ -226,13 +182,12 @@ if uploaded_files:
                 else:
                     st.image(step_img, caption=title)
 
-        st.markdown('</div>', unsafe_allow_html=True)
-
 
         # ==========================
-        # 🧠 PREDICTION
+        # PREDICTION
         # ==========================
-        prediction = model(processed).numpy()
+        with st.spinner("Analyzing MRI Scan..."):
+            prediction = model(processed).numpy()
 
         class_labels = ['glioma', 'meningioma', 'notumor', 'pituitary']
 
@@ -244,8 +199,10 @@ if uploaded_files:
 
 
         # ==========================
-        # 📊 PROBABILITIES
+        # PROBABILITIES
         # ==========================
+        st.subheader("📊 Class Probabilities")
+
         probabilities = prediction[0] * 100
 
         df = pd.DataFrame({
@@ -253,19 +210,16 @@ if uploaded_files:
             "Probability (%)": probabilities
         })
 
+        st.bar_chart(df.set_index("Tumor"))
+
         prob_dict = {
             class_labels[i]: float(probabilities[i])
             for i in range(len(class_labels))
         }
 
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.subheader("📊 Class Probabilities")
-        st.bar_chart(df.set_index("Tumor"))
-        st.markdown('</div>', unsafe_allow_html=True)
-
 
         # ==========================
-        # ⚠️ CONFUSION CHECK
+        # UNCERTAINTY CHECK
         # ==========================
         sorted_probs = sorted(prob_dict.items(), key=lambda x: x[1], reverse=True)
 
@@ -274,10 +228,8 @@ if uploaded_files:
 
 
         # ==========================
-        # 🧠 RESULT CARD
+        # RESULT
         # ==========================
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-
         st.subheader("🧠 Diagnosis Result")
 
         col1, col2, col3 = st.columns(3)
@@ -287,13 +239,10 @@ if uploaded_files:
 
         st.progress(float(confidence))
 
-        st.markdown('</div>', unsafe_allow_html=True)
-
 
         # ==========================
-        # 🧠 CONFIDENCE
+        # CONFIDENCE ANALYSIS
         # ==========================
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.subheader("🧠 Confidence Analysis")
 
         if confidence > 0.9:
@@ -303,13 +252,18 @@ if uploaded_files:
         else:
             st.error("Low Confidence")
 
-        st.markdown('</div>', unsafe_allow_html=True)
+        if confidence < 0.7:
+            st.warning("""
+Possible reasons:
+• Poor image quality  
+• Unseen patterns  
+• Model limitation  
+""")
 
 
         # ==========================
-        # 🔥 GRAD-CAM
+        # GRAD-CAM
         # ==========================
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.subheader("🔥 Model Explanation")
 
         heatmap = get_gradcam_heatmap(model, processed, "conv2d_2")
@@ -335,25 +289,20 @@ if uploaded_files:
             with col2:
                 st.warning("Grad-CAM not available")
 
-        st.markdown('</div>', unsafe_allow_html=True)
-
 
         # ==========================
-        # 📋 INTERPRETATION
+        # INTERPRETATION
         # ==========================
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.subheader("📋 Interpretation")
 
         if result == "No Tumor Detected":
             st.success("MRI appears normal.")
         else:
-            st.error(f"{predicted_label} tumor detected. Clinical verification recommended.")
-
-        st.markdown('</div>', unsafe_allow_html=True)
+            st.error(f"{predicted_label} tumor detected. Clinical validation recommended.")
 
 
         # ==========================
-        # 📄 REPORT
+        # REPORT
         # ==========================
         if st.button(f"Generate Report ({uploaded_file.name})"):
 
@@ -373,7 +322,6 @@ if uploaded_files:
                     file_name=f"report_{uploaded_file.name}.pdf"
                 )
 
-            # Cleanup
             try:
                 os.remove(image_path)
                 if heatmap_path:
@@ -381,10 +329,13 @@ if uploaded_files:
                 os.remove(report_path)
             except:
                 pass
-            
-        
-        st.markdown("---")
-        st.markdown(
-            "<center style='color: gray;'>AI-Based Brain Tumor Detection System • Built with Streamlit</center>",
-            unsafe_allow_html=True
-        )
+
+
+# ==========================
+# FOOTER
+# ==========================
+st.markdown("---")
+st.markdown(
+    "<center style='color: gray;'>AI-Based Brain Tumor Detection System • Built with Streamlit</center>",
+    unsafe_allow_html=True
+)
