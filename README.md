@@ -1,314 +1,279 @@
-# 🧠 Explainable Deep Learning Model For Brain Tumor Detetction using MRI Images.
-
-## 📌 Overview
-
-This project focuses on the **detection and classification of brain tumors** from MRI images using a **Convolutional Neural Network (CNN)**.
-It also integrates **Explainable AI (XAI)** using **Grad-CAM** to visualize model decision-making.
-
-The system classifies MRI images into multiple tumor categories and provides visual explanations highlighting important regions influencing predictions.
+# 🧠 Explainable Deep Learning Model For Brain Tumor Detection and Classification using MRI Images
 
 ---
 
-## 🎯 Objectives
+## 🚀 Live Demo
 
-* Detect brain tumors from MRI images
-* Perform **multiclass classification**
-* Improve model interpretability using **Grad-CAM**
-* Build a structured deep learning pipeline
+👉 **Try the Application:**  
+🔗 https://brain-mri-ai.streamlit.app/
+
+---
+
+## 📌 Overview
+
+This project presents an **AI-powered diagnostic system** that detects and classifies brain tumors from MRI scans using a **Convolutional Neural Network (CNN)**.
+
+Unlike traditional models, this system integrates **Explainable AI (XAI)** using **Grad-CAM**, allowing users to visually understand *why* the model made a prediction.
+
+It is deployed as an **interactive web application** built with Streamlit.
+
+---
+
+## ✨ Features
+
+- 🧠 Brain tumor classification from MRI images  
+- 📊 Multiclass prediction (4 tumor categories)  
+- 🔥 Grad-CAM visualization for explainability  
+- 📈 Confidence score & probability distribution  
+- ⚠️ Uncertainty detection  
+- 🔍 Image quality assessment  
+- 📄 Clinical-style PDF report generation  
+- 🌐 Fully deployed web application  
+
+---
+
+## 🧬 Tumor Classes
+
+| Class | Description |
+|------|------------|
+| Glioma | Tumor in brain/glial cells |
+| Meningioma | Tumor in brain membranes |
+| Pituitary | Tumor in pituitary gland |
+| No Tumor | Normal brain MRI |
 
 ---
 
 ## 🧠 Model Architecture
 
-* Convolutional Neural Network (CNN)
-* Layers:
-
-  * Convolution + ReLU
-  * Max Pooling
-  * Fully Connected Layers
-  * Softmax Output (Multiclass)
+- Convolutional Neural Network (CNN)
+- Key Layers:
+  - Convolution + ReLU  
+  - Max Pooling  
+  - Fully Connected Layers  
+  - Softmax Output  
 
 ---
 
-## 📊 Dataset
+## 🔬 Explainable AI (Grad-CAM)
 
-* Brain MRI Images Dataset
-* Contains multiple categories of brain tumors
-* Organized into:
+Grad-CAM provides **visual explanations** by highlighting regions in the MRI scan that influenced the model’s decision.
 
-  * Training set
-  * Testing set
+> ⚠️ *Note:* Grad-CAM shows model attention, not exact tumor boundaries.
 
 ---
 
 ## ⚙️ Tech Stack
 
-* Python
-* TensorFlow / Keras
-* NumPy
-* OpenCV
-* Matplotlib
-* VS Code
+| Category | Tools |
+|--------|------|
+| Language | Python |
+| Deep Learning | TensorFlow / Keras |
+| Image Processing | OpenCV |
+| Data Handling | NumPy, Pandas |
+| Visualization | Matplotlib |
+| Web App | Streamlit |
+| Report Generation | ReportLab |
 
 ---
 
-## 📂 Project Structure
+## 🗂️ Project Structure
 
-```
-BRAIN_TUMOR_DETECTION_BE_PROJECT/
-│
-├── V2_Multiclass/
-│   ├── dataset/
-│   │   ├── Training/
-│   │   └── Testing/
-│   │
-│   ├── models/
-│   │   └── multiclass_brain_tumor_cnn.h5
-│   │
-│   ├── notebooks/
-│   │   ├── 01_dataset_verification.ipynb
-│   │   ├── 02_data_loading.ipynb
-│   │   ├── 03_multiclass_cnn_architecture.ipynb
-│   │   └── 04_multiclass_gradcam.ipynb
-│   │
-│   ├── utils/
-│
+```bash
+BrainTumorSystem/
+├── model/
+│   └── model_loader.py
+├── utils/
+│   ├── preprocess.py
+│   ├── gradcam.py
+│   └── report.py
 ├── assets/
-│   ├── Grad_CAM_Output.png
-│   ├── class_distribution.png
-│   ├── confusion_matrix.png
-│   ├── preprocessing.png
-|
+│   └── ai_stamp.png
+├── app.py
 ├── requirements.txt
-├── README.md
-└── .gitignore
+└── README.md
 ```
 
 ---
 
-## 🧪 Workflow
+## 🔄 System Workflow
 
-1. **Dataset Verification**
-
-   * Validate dataset integrity and class distribution
-
-2. **Data Loading & Preprocessing**
-
-   * Image resizing
-   * Normalization
-   * Label encoding
-
-3. **Model Training**
-
-   * CNN training on MRI dataset
-   * Performance evaluation
-
-4. **Explainability (Grad-CAM)**
-
-   * Visualize important regions in MRI images
-   * Interpret model predictions
+1. Upload MRI Image  
+2. Image Quality Assessment  
+3. Preprocessing (resize + normalization)  
+4. Model Prediction  
+5. Probability Distribution  
+6. Confidence Analysis  
+7. Grad-CAM Visualization  
+8. Clinical Interpretation  
+9. Report Generation  
 
 ---
 
-## 📥 Pre-trained Model
+## 📊 Outputs
 
-Due to GitHub file size limitations, the trained model is not included in this repository.
-
-👉 Download model from here:
-**[https://drive.google.com/drive/folders/1J6zwcEmjOlWpcxnOJCGMR1g0edaYCM2G?usp=sharing]**
-
-After downloading, place it in:
-
-```
-V2_Multiclass/models/multiclass_brain_tumor_cnn.h5
-```
+- Tumor classification result  
+- Confidence score  
+- Probability distribution chart  
+- Grad-CAM heatmap  
+- Clinical interpretation  
+- Downloadable PDF report  
 
 ---
 
-## ▶️ How to Run
+## 📥 Model Download
+
+Due to GitHub limitations, the trained model is not included.
+
+👉 Download from:  
+https://drive.google.com/drive/folders/1J6zwcEmjOlWpcxnOJCGMR1g0edaYCM2G?usp=sharing
+
+Place it inside:
+
+model/
+
+---
+
+## ▶️ Run Locally
 
 ### 1. Clone Repository
-
 ```bash
 git clone https://github.com/TanmayT134/Explainable-Brain-Tumor-Detection.git
 cd Explainable-Brain-Tumor-Detection
 ```
 
----
-
 ### 2. Create Virtual Environment
 
-```bash
 python -m venv venv
-```
 
----
+### 3. Activate Environment
 
-### 3. Activate Virtual Environment
+#### Windows
 
-#### Windows:
-
-```bash
 venv\Scripts\activate
-```
 
-#### Mac/Linux:
+#### Mac/Linux
 
-```bash
 source venv/bin/activate
-```
-
----
 
 ### 4. Install Dependencies
 
-```bash
 pip install -r requirements.txt
-```
 
----
+### 5. Run App
 
-### 5. Set Up Python Kernel (Important)
-
-```bash
-pip install ipykernel
-python -m ipykernel install --user --name=venv
-```
-
-Then in VS Code:
-
-* Open notebook
-* Select kernel → **venv**
-
----
-
-### 6. Download Pre-trained Model
-
-Download from:
-👉 [Download Model](https://drive.google.com/drive/folders/1J6zwcEmjOlWpcxnOJCGMR1g0edaYCM2G?usp=sharing)
-
-Place it in:
-
-```
-V2_Multiclass/models/multiclass_brain_tumor_cnn.h5
-```
-
----
-
-### 7. Run Notebooks (in order)
-
-* 01_dataset_verification.ipynb
-* 02_data_loading.ipynb
-* 03_multiclass_cnn_architecture.ipynb
-* 04_multiclass_gradcam.ipynb
-
+streamlit run app.py
 
 ---
 
 ## 📈 Results
 
-* Successful classification of brain tumor types
-* Grad-CAM visualizations highlight tumor regions
-* Improved trust and interpretability of the model
+Accurate classification across tumor classes
+
+Grad-CAM highlights meaningful regions
+
+Provides explainable predictions
+
+Generates structured diagnostic reports
 
 ---
 
-## 📊 Visual Results
+## 📸 Application Preview
 
-### 📈 Dataset Insights
-
-#### Class Distribution
-
-![Class Distribution](assets/class_distribution.png)
-
-* Shows the distribution of different tumor classes
-* Helps identify dataset balance or imbalance
+### 🖥️ User Interface
+![UI](assets/ui_main.png)
 
 ---
 
-### ⚙️ Data Preprocessing
+### 📊 Prediction Output
+![Prediction](assets/prediction_output.png)
 
-#### Preprocessing Steps
+---
 
+### 🔥 Grad-CAM Visualization
+![GradCAM](assets/gradcam_output.png)
+
+---
+
+### 📄 Generated Report
+![Report](assets/report_output.png)
+
+---
+
+### 🧪 Preprocessing Steps
 ![Preprocessing](assets/preprocessing.png)
 
-* Image resizing and normalization
-* Preparation of MRI scans for CNN input
+---
+
+## ⚠️ Limitations
+
+Trained on limited dataset
+
+Not intended for clinical use
+
+Grad-CAM provides approximate explanations
 
 ---
 
-### 📊 Model Evaluation
+## 🎯 Applications
 
-#### Confusion Matrix
+AI-assisted medical imaging
 
-![Confusion Matrix](assets/confusion_matrix.png)
+Educational tool for medical AI
 
-* Displays model performance across all classes
-* Helps analyze misclassifications
+Explainable AI research
 
----
+Computer-aided diagnosis
 
-### 🔥 Explainable AI (Grad-CAM)
+--- 
 
-#### Grad-CAM Output (Exmaple : No Tumor Found Image)
+## 👨‍💻 Team & Contributions
 
-![GradCAM](assets/Grad_CAM_Output.png)
+This project was developed collaboratively with clearly defined responsibilities:
 
-#### Grad-CAM Output (Exmaple : Tumor Found Image)
-
-![GradCAM](assets/grad_cam_tumor_op.png)
-
-* Highlights important regions in MRI images
-* Shows where the model is focusing
-* Improves interpretability and trust
+### 🧠 Tanmay Tawade *(Lead Developer)*
+- Designed and implemented the complete system architecture  
+- Developed CNN-based prediction pipeline  
+- Integrated Grad-CAM for explainable AI  
+- Built Streamlit web application (UI/UX)
 
 ---
 
-## 📌 Key Observations
-
-* Model performs well across multiple tumor classes
-* Confusion matrix indicates classification accuracy and errors
-* Grad-CAM correctly highlights tumor regions
-* Preprocessing improves model performance and consistency
+### 📊 Aishwarya Kale *(Data & Documentation)*
+- Dataset collection and preprocessing  
+- Data organization and validation  
+- Report writing and documentation  
 
 ---
 
-## 📌 Applications
+### 🧪 Sakshi Bedekar *(Research & Testing)*
+- Project ideation and conceptual design  
+- Model testing and result evaluation  
+- Presentation materials and validation  
 
-* Medical imaging analysis
-* Computer-aided diagnosis
-* AI-assisted healthcare systems
-
----
-
-## 👨‍💻 Contributors
-
-* **Tanmay Tawade**
-
-  * CNN model development, training, and optimization
-  * Grad-CAM (Explainable AI) implementation
-  * Code integration and GitHub setup
-
-* **Aishwarya Kale**
-
-  * Dataset collection and organization
-  * Data preprocessing
-  * Project poster, logbook, PPT presentation and report content
-
-* **Sakshi Bedekar**
-
-  * Initial project idea and concept discussion
-  * Testing and result analysis
-  * Documentation, Project Poster, PPT presentation and report content
-
-> 📌 *Note: The project approach, design decisions, and improvements were discussed and finalized collaboratively by all team members.*
+> 📌 *All major design decisions and improvements were discussed and finalized collaboratively.*
 
 ---
 
 ## ⭐ Acknowledgements
 
-* Kaggle Dataset
-* Open-source deep learning libraries
-* Research papers on CNN & Explainable AI
+Kaggle Brain MRI Dataset
+
+TensorFlow & Keras
+
+Streamlit
+
+Research papers on CNN & XAI
 
 ---
+
+## 🚀 Future Improvements
+
+Larger dataset training
+
+Improved model accuracy
+
+Tumor segmentation (not just classification)
+
+Grad-CAM++ integration
+
+Clinical validation pipeline
