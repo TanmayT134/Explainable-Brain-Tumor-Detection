@@ -263,17 +263,3 @@ TensorFlow & Keras
 Streamlit
 
 Research papers on CNN & XAI
-
----
-
-## 🚀 Future Improvements
-
-Larger dataset training
-
-Improved model accuracy
-
-Tumor segmentation (not just classification)
-
-Grad-CAM++ integration
-
-Clinical validation pipeline
