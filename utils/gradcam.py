@@ -67,28 +67,28 @@ def overlay_heatmap(heatmap, image):
     heatmap = heatmap - np.min(heatmap)
     heatmap = heatmap / (np.max(heatmap) + 1e-8)
 
-    # 🔥 Boost strong regions
-    heatmap = np.power(heatmap, 2.5)
+    # 🔥 Balanced boost
+    heatmap = np.power(heatmap, 1.5)
 
     # Smooth
     heatmap = cv2.GaussianBlur(heatmap, (11, 11), 0)
 
-    # 🔥 Keep only strongest activations
-    threshold = np.percentile(heatmap, 92)
+    # 🔥 Less aggressive threshold
+    threshold = np.percentile(heatmap, 80)
     heatmap = np.where(heatmap >= threshold, heatmap, 0)
 
-    # Brain mask
+    # Soft brain mask
     brain_mask = get_brain_mask(image) / 255.0
-    heatmap = heatmap * brain_mask
+    heatmap = heatmap * (0.7 * brain_mask + 0.3)
 
-    # Convert to color
+    # Color map
     colored = cv2.applyColorMap(np.uint8(255 * heatmap), cv2.COLORMAP_JET)
 
-    # Overlay only active regions
+    # Overlay
     overlay = image.copy()
     mask = heatmap > 0
 
-    overlay[mask] = cv2.addWeighted(image[mask], 0.5, colored[mask], 0.5, 0)
+    overlay[mask] = cv2.addWeighted(image[mask], 0.6, colored[mask], 0.4, 0)
 
     return overlay
 
