@@ -9,6 +9,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import letter
 from datetime import datetime
+from pathlib import Path
 
 
 def generate_report(image_path, heatmap_path, result, tumor_type, confidence, probabilities):
@@ -174,7 +175,7 @@ def generate_report(image_path, heatmap_path, result, tumor_type, confidence, pr
     # ==========================
     elements.append(Spacer(1, 40))
 
-    stamp_path = os.path.join("assets", "ai_stamp.png")
+    stamp_path = Path("assets") / "icons" / "ai_stamp.png"
 
     try:
         stamp = Image(stamp_path, width=70, height=70)
