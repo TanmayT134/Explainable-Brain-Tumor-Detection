@@ -206,13 +206,13 @@ Grad-CAM produces visual heatmaps that highlight the regions of an MRI scan cont
               Image Preprocessing
                        │
                        ▼
-              CNN Classification
+               CNN Classification
                        │
                        ▼
             Probability Distribution
                        │
                        ▼
-             Confidence Analysis
+              Confidence Analysis
                        │
                        ▼
            Grad-CAM Heatmap Generation
